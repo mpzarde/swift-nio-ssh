@@ -193,7 +193,7 @@ extension NIOSSHPublicKey {
         case .ecdsaP521:
             return Self.ecdsaP521PublicKeyPrefix
         case .custom(let publicKey):
-            return publicKey.publicKeyPrefix.utf8
+            return publicKey.algorithmName.utf8
         case .certified(let base):
             return base.keyPrefix
         }

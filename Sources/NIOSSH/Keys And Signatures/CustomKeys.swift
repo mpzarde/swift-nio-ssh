@@ -49,6 +49,13 @@ public protocol NIOSSHPublicKeyProtocol {
     /// The returned value MUST NOT overlap with other public key implementations or a specifications that the public key does not implement.
     static var publicKeyPrefix: String { get }
 
+    /// The algorithm name advertised in SSH_MSG_USERAUTH_REQUEST and included in the
+    /// signed payload. For most key types this is the same as `publicKeyPrefix`, but
+    /// RSA SHA-2 variants require a different value here (`rsa-sha2-256` / `rsa-sha2-512`)
+    /// while the key blob itself must still carry the `ssh-rsa` key type prefix.
+    /// Defaults to `publicKeyPrefix` so existing implementations are unaffected.
+    static var algorithmName: String { get }
+
     /// The raw reprentation of this publc key as a blob.
     var rawRepresentation: Data { get }
 
@@ -63,9 +70,16 @@ public protocol NIOSSHPublicKeyProtocol {
     static func read(from buffer: inout ByteBuffer) throws -> Self
 }
 
+public extension NIOSSHPublicKeyProtocol {
+    static var algorithmName: String { publicKeyPrefix }
+}
+
 internal extension NIOSSHPublicKeyProtocol {
     var publicKeyPrefix: String {
         Self.publicKeyPrefix
+    }
+    var algorithmName: String {
+        Self.algorithmName
     }
 }
 
